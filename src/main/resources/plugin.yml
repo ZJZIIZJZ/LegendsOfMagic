@@ -1,0 +1,7 @@
+name: LegendsOfMagic
+version: '${version}'
+main: personal.zjziizjz.legendsofmagic.LegendsOfMagic
+commands:
+  magic2:
+    description: 原创RPG插件！一套全新玩法
+    usage: /magic2 help
