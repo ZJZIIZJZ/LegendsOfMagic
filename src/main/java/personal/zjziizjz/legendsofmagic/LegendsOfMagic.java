@@ -12,9 +12,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import personal.zjziizjz.legendsofmagic.Listener.ChestGUI;
+import personal.zjziizjz.legendsofmagic.Listener.DamageSetByEntiy;
 import personal.zjziizjz.legendsofmagic.Listener.MagicBook.MysteryMagicBook;
 import personal.zjziizjz.legendsofmagic.Listener.MagicReel.MagicReel;
 import personal.zjziizjz.legendsofmagic.Listener.MagicReel.UseReel;
+import personal.zjziizjz.legendsofmagic.Listener.OnPlayerDamage;
 import personal.zjziizjz.legendsofmagic.Listener.UseMagic;
 
 public class LegendsOfMagic extends JavaPlugin implements Listener {
@@ -22,13 +24,14 @@ public class LegendsOfMagic extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-
+        getServer().getPluginManager().registerEvents(new OnPlayerDamage(),this);
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new MagicReel(), this);
         getServer().getPluginManager().registerEvents(new MysteryMagicBook(), this);
         getServer().getPluginManager().registerEvents(new UseMagic(), this);
         getServer().getPluginManager().registerEvents(new ChestGUI(),this);
         getServer().getPluginManager().registerEvents(new UseReel(),this);
+        getServer().getPluginManager().registerEvents(new DamageSetByEntiy(),this);
         getLogger().info("MagicWandPlugin has been enabled!");
         this.getCommand("magic2").setExecutor(this);
 // 注册 Fireball 类中的事件监听器

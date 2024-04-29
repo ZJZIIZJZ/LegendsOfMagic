@@ -29,7 +29,7 @@ public class MysteryMagicBook implements Listener {
                 ItemMeta MagicBookMeta = MagicBook.getItemMeta();
                 MagicBookMeta.setDisplayName(ChatColor.YELLOW + magicget);
                 if (magicget.equals("\u5bd2\u51b0")) {
-                    MagicBookMeta.setLore(Arrays.asList(ChatColor.GOLD+"\u4f7f\u4f606*6\u8303\u56f4\u5185\u7684\u654c\u4eba\u901f\u5ea6\u964d\u4f4e50%",
+                    MagicBookMeta.setLore(Arrays.asList(ChatColor.GOLD+"\u4f7f\u4f6010*10\u8303\u56f4\u5185\u7684\u654c\u4eba\u901f\u5ea6\u964d\u4f4e50%",
                             "CD:25s",
                             "\u8bf7\u52a1\u5fc5\u5c06\u6b64\u4e66\u7f6e\u4e8e\u80cc\u5305\u5185\u624d\u53ef\u4f7f\u7528\u6b64\u6cd5\u672f"));
                 } else if (magicget.equals("\u7981\u672f")) {
@@ -41,9 +41,13 @@ public class MysteryMagicBook implements Listener {
                             "CD:50s",
                             "\u8bf7\u52a1\u5fc5\u5c06\u6b64\u4e66\u7f6e\u4e8e\u80cc\u5305\u5185\u624d\u53ef\u4f7f\u7528\u6b64\u6cd5\u672f"));
                 } else if (magicget.equals("\u8bde\u5492")) {
-                    MagicBookMeta.setLore(Arrays.asList(ChatColor.GOLD+"\u7ed9\u4e88\u5bf9\u624b\u5929\u8c34\u6548\u679c,\u654c\u4eba\u79fb\u52a8\u65f6\u4f1a\u53d7\u5230\u96f7\u51fb\u7684\u771f\u5b9e\u4f24\u5bb3",
+                    MagicBookMeta.setLore(Arrays.asList(ChatColor.GOLD+"\u7ed9\u4e88\u5bf9\u624b\u5929\u8c34\u6548\u679c,\u654c\u4eba\u4f1a\u53d7\u5230\u96f7\u51fb\u7684\u771f\u5b9e\u4f24\u5bb3",
                             "CD:25s"
                     ,   "\u8bf7\u52a1\u5fc5\u5c06\u6b64\u4e66\u7f6e\u4e8e\u80cc\u5305\u5185\u624d\u53ef\u4f7f\u7528\u6b64\u6cd5\u672f"));
+                }else if (magicget.equals("\u5e87\u4f51")) {
+                    MagicBookMeta.setLore(Arrays.asList(ChatColor.GOLD+"\u83b7\u5f97\u9b54\u6cd5\u7011\u5e03\u7684\u5e87\u4f51,\u62b5\u6d88\u4e0b\u4e00\u6b21\u4f24\u5bb3\uff01[\u5305\u62ec\u7981\u672f]",
+                            "CD:120s",
+                            "\u8bf7\u52a1\u5fc5\u5c06\u6b64\u4e66\u7f6e\u4e8e\u80cc\u5305\u5185\u624d\u53ef\u4f7f\u7528\u6b64\u6cd5\u672f"));
                 }
                 MagicBook.setItemMeta(MagicBookMeta);
                 player.getInventory().setItemInMainHand(MagicBook);

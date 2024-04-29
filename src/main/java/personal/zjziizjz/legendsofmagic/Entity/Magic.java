@@ -1,17 +1,20 @@
 package personal.zjziizjz.legendsofmagic.Entity;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import personal.zjziizjz.legendsofmagic.LegendsOfMagic;
+import personal.zjziizjz.legendsofmagic.Util.InCircleLocation;
 
 import java.util.List;
+import java.util.Random;
 
 //封装了使用魔法方法 获取魔法ID 时间等
-public class Magic {
+public class Magic{
 
     private final String modeName;
     private final int modeId;
@@ -47,7 +50,7 @@ public class Magic {
                 regen(player);
                 break;
             case 1002:
-                launchMissiles(player);
+                Imprison(player);
                 break;
             case 1003:
                 buff(player);
@@ -56,13 +59,16 @@ public class Magic {
                 slow(player);
                 break;
             case 1005:
-                // TODO: 实现此模式
+                damnation(player);
                 break;
             case 1006:
                 power(player);
                 break;
             case 1007:
                 kill(player);
+                break;
+            case 1008:
+                bless(player);
                 break;
         }
     }
@@ -87,23 +93,48 @@ public class Magic {
         player.sendTitle("\u4f60\u7684\u4f24\u53e3\u5728\u6108\u5408...", "\u4f60\u7684\u4f24\u53e3\u5728\u6108\u5408", 10, 70, 20);
     }
 
-    private void launchMissiles(Player player) {
-        Vector direction = player.getLocation().getDirection();
-        double offset = -6.0;
-        player.sendMessage(ChatColor.DARK_PURPLE + "\u4f60\u53ec\u5524\u4e8610\u4e2a\u6f5c\u5f71\u5bfc\u5f39!");
-        Location spawnLocation = player.getLocation().add(direction.clone().multiply(10));
-        for (int i = 0; i < 20; i++) {
-            Location missileLocation = spawnLocation.clone().add(direction.clone().multiply(offset));
-            ShulkerBullet missile = (ShulkerBullet) player.getWorld().spawnEntity(missileLocation, EntityType.SHULKER_BULLET);
-            missile.setVelocity(direction.clone().multiply(0.5));
-            missile.setCustomName("missile");
-            missile.setCustomNameVisible(false);
-            missile.addScoreboardTag("missile");
-            missile.setGravity(false);
-            missile.setShooter(player);
-            missile.setSilent(true);
-            missile.setInvulnerable(true);
-            offset += 1.0;
+
+    private void Imprison(Player player){
+        List<Entity> nearbyEntities = player.getNearbyEntities(10, 10, 10);
+        if (nearbyEntities.isEmpty()){player.sendMessage("\u4f60\u9644\u8fd1\u6ca1\u6709\u654c\u4eba \u53ea\u80fd\u7981\u952210*10\u8303\u56f4\u5185\u7684");
+            return;}
+        for (Entity entity : nearbyEntities) {
+            if (entity instanceof LivingEntity) {
+                player.sendMessage(ChatColor.DARK_PURPLE+"\u4f60\u7981\u9522\u4e86 [10*10] \u654c\u4eba");
+                Location location=((LivingEntity) entity).getLocation();
+                Location location2=new Location(player.getWorld(),location.getX(),location.getY()+2.4,location.getZ());
+                entity.getWorld().spawnEntity(location2,EntityType.SHULKER_BULLET);
+            }
+        }
+    }
+
+    private void damnation(Player player) {
+        player.sendTitle(ChatColor.DARK_PURPLE+"\u4f60\u8bc5\u5492\u7684\u8eab\u8fb910*10\u7684\u751f\u7269","\u4ed6\u4eec\u5c06\u4f1a\u906d\u9047\u96f7\u5288\u3002\u3002\u3002");
+        List<Entity> nearbyEntities = player.getNearbyEntities(10, 10, 10);
+        for (Entity entity : nearbyEntities) {
+            if (entity instanceof LivingEntity) {
+                final int[] p = {0};
+                    Bukkit.getScheduler().runTaskTimer(
+                        LegendsOfMagic.getPlugin(LegendsOfMagic.class),
+                        new BukkitRunnable() {
+
+                            public void run() {
+                                if (p[0] >= 5) {
+                                    return;
+                                }
+                                p[0]++;
+
+                                // 计算实体当前的生命值
+                                double health = ((LivingEntity) entity).getHealth();
+                                // 计算每秒应该减少的生命值
+                                double damage = health * 0.1;
+                                // 让实体受到雷击，并减少生命值
+                                entity.getWorld().strikeLightningEffect(entity.getLocation());
+                                ((LivingEntity) entity).damage(damage);
+
+                            }
+                            }, 0, 50);
+            }
         }
     }
 
@@ -133,9 +164,11 @@ public class Magic {
             if (entity instanceof LivingEntity) {
                 player.sendMessage(ChatColor.BOLD+"\u4f60\u4f7f\u7528\u4e86\u51bb\u7ed3\u672f!");
                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 5 * 20, 4));
+
             }
         }
     }
+
 
     private void power(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 4000, 0));
@@ -157,28 +190,41 @@ public class Magic {
     }
 
     private void kill(Player player) {
-        Location loc = player.getEyeLocation();
-        Vector dir = loc.getDirection();
-        double distance = 5;
-        Location endLoc = loc.add(dir.multiply(distance));
+        Vector direction = player.getLocation().getDirection();
+        double offset = -1.5;
+        Location spawnLocation = player.getLocation().add(direction.clone().multiply(2));
 
-        List<Entity> nearbyEntities = player.getNearbyEntities(5, 5, 5);
-        boolean killed = false;
-        for (Entity entity : nearbyEntities) {
-            if (entity instanceof LivingEntity && !(entity instanceof Player)) {
-                Vector vec = entity.getLocation().subtract(loc).toVector();
-                if (vec.normalize().dot(dir) > 0.99) {
-                    ((LivingEntity) entity).setHealth(0);
-                    killed = true;
-                }
+            Location missileLocation = spawnLocation.clone().add(direction.clone().multiply(offset));
+            Location missileLocation2=new Location(missileLocation.getWorld(),missileLocation.getX(),missileLocation.getY()+1,missileLocation.getZ());
+            ShulkerBullet missile = (ShulkerBullet) player.getWorld().spawnEntity(missileLocation2, EntityType.SHULKER_BULLET);
+            missile.setVelocity(direction.clone().multiply(1.5));
+            missile.setCustomName("missile");
+            missile.setCustomNameVisible(false);
+            missile.addScoreboardTag("missile");
+            missile.setGravity(false);
+            missile.setShooter(player);
+            Random random = new Random();
+            int chance = random.nextInt(4); // 生成0到3之间的随机整数
+            if (chance == 0) {
+                missile.setMetadata("damage", new FixedMetadataValue(LegendsOfMagic.getPlugin(LegendsOfMagic.class), 10000000.0)); // 存储导弹的伤害值
+
+                player.sendTitle("\u6b7b\u4ea1\u4e86!", "\u4f60\u5c31\u5730\u89e3\u51b3\u4e86\u8fd9\u4e9b\u751f\u547d", 10, 70, 20);
+            }else {
+                player.sendMessage("\u4e0d\u5e78\u7684.\u4f60\u7684\u9b54\u6cd5\u5931\u6548\u4e86(3/4\u6982\u7387)");
             }
-        }
+
+            missile.setSilent(true);
+
+            missile.setInvulnerable(true);
+
 
         // 向玩家发送消息
-        if (killed) {
-            player.sendTitle("\u6b7b\u4ea1\u4e86!", "\u4f60\u5c31\u5730\u89e3\u51b3\u4e86\u8fd9\u4e9b\u751f\u547d", 10, 70, 20);
-        } else {
-            player.sendMessage(ChatColor.RED + "\u4f3c\u4e4e\u5e76\u6ca1\u6709\u6740\u6389\u4ec0\u4e48!");
-        }
+
     }
+
+    private void bless(Player player){
+        player.setMetadata("nextDamageReduction", new FixedMetadataValue(LegendsOfMagic.getPlugin(LegendsOfMagic.class),1000));
+        Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "[魔法瀑布的庇佑！] " + ChatColor.RESET + player.getName()+"\u83b7\u5f97\u4e86\u6cd5\u7011\u5e03\u7684\u5e87\u4f51 \u4ed6\u5c06\u514d\u9664\u4e0b\u6b21\u4f24\u5bb3");
+    }
+
 }

@@ -77,7 +77,6 @@ public class UseReel implements Listener {
                         if (InCircleLocation.inBall(player, location1, 9)) {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 40, 5));
                             player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 5));
-
                             player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 2000, 5));
                             for (int i = 0; i <= 36; i++) {
                                 double x3 = x4 + 10 * Math.sin((double) i * Math.PI / 18.0);

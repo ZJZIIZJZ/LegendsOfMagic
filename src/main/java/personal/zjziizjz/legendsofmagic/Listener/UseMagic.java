@@ -27,8 +27,10 @@ public class UseMagic implements Listener {
         magicMap.put(1002, new Magic("Missiles", 1002, 30_000));
         magicMap.put(1003, new Magic("Buff", 1003, 25_000));
         magicMap.put(1004, new Magic("Slow", 1004, 25_000));
+        magicMap.put(1005, new Magic("Damnation", 1005, 25_000));
         magicMap.put(1006, new Magic("Power", 1006, 50_000));
         magicMap.put(1007, new Magic("Kill", 1007, 50_000));
+        magicMap.put(1008,new Magic("Blees",1008,120_000));
     }
 
     @EventHandler
